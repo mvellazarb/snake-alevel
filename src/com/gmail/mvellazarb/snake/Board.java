@@ -43,7 +43,7 @@ public class Board extends JPanel {
     private int score;
     private Point fruit = new Point(random.nextInt(25), random.nextInt(25));
     private Snake snake = new Snake();
-    public Direction requestedDirection = snake.direction;
+    public Direction requestedDirection = snake.getDirection();
 
 
     public Board() {
@@ -79,7 +79,7 @@ public class Board extends JPanel {
     // TODO snake eyes (seven, eleven!)
     private void drawSnake(Graphics g) {
         g.setColor(Color.GREEN);
-        for (Point segment : snake.segments)
+        for (Point segment : snake.getSegments())
             g.fillRect(segment.x * TILE_SIZE, segment.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
     }
 
@@ -93,20 +93,18 @@ public class Board extends JPanel {
     }
     
     private void checkCollision() {
-        Point head = new Point(snake.segments.get(snake.segments.size() - 1));
-        for (int i = 0; i < snake.segments.size() - 1; i++) {
-            Point segment = snake.segments.get(i);
-            if (head.equals(segment)) {
+        for (int i = 0; i < snake.getSegments().size() - 1; i++) {
+            Point segment = snake.getSegments().get(i);
+            if (snake.getHead().equals(segment)) {
                 isRunning = false;
             }
         }
     }
 
-    private void checkFruitCollision() {  // TODO: this is probable not the most efficient way of doing this
-        Point head = new Point(snake.segments.get(snake.segments.size() - 1));
-        if (head.equals(fruit)) { // if the head's point and the fruit's point match up
+    private void checkFruitCollision() {
+        if (snake.getHead().equals(fruit)) { // if the head's point and the fruit's point match up
             score += 10;
-            snake.segments.add(0, new Point(snake.segments.get(0)));
+            snake.getSegments().add(0, new Point(snake.getSegments().get(0)));
             spawnFruit();
         }
     }
@@ -121,25 +119,25 @@ public class Board extends JPanel {
     private boolean isOpposingDirection() {
         switch (requestedDirection) {
             case UP:
-                return snake.direction == Direction.DOWN;
+                return snake.getDirection() == Direction.DOWN;
             case DOWN:
-                return snake.direction == Direction.UP;
+                return snake.getDirection() == Direction.UP;
             case LEFT:
-                return snake.direction == Direction.RIGHT;
+                return snake.getDirection() == Direction.RIGHT;
             case RIGHT:
-                return snake.direction == Direction.LEFT;
+                return snake.getDirection() == Direction.LEFT;
             default:
                 return false;
         }
     }
     
     private void move() {
-        Point head = new Point(snake.segments.get(snake.segments.size() - 1));
+        Point head = new Point(snake.getHead());  // make a local 'copy', don't want a reference
 
         if (!isOpposingDirection())
-            snake.direction = requestedDirection;
+            snake.setDirection(requestedDirection);
 
-        switch (snake.direction) {
+        switch (snake.getDirection()) {
             case UP:
                 head.y--;
                 if (head.y < 0)
@@ -162,8 +160,8 @@ public class Board extends JPanel {
                 break;
         }
 
-        snake.segments.add(head);
-        snake.segments.remove(0);
+        snake.getSegments().add(head);
+        snake.getSegments().remove(0);
     }
 
     public void gameLoop() {
