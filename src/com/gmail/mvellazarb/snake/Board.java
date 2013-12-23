@@ -115,26 +115,11 @@ public class Board extends JPanel {
         checkFruitCollision();
         repaint();
     }
-
-    private boolean isOpposingDirection() {
-        switch (requestedDirection) {
-            case UP:
-                return snake.getDirection() == Direction.DOWN;
-            case DOWN:
-                return snake.getDirection() == Direction.UP;
-            case LEFT:
-                return snake.getDirection() == Direction.RIGHT;
-            case RIGHT:
-                return snake.getDirection() == Direction.LEFT;
-            default:
-                return false;
-        }
-    }
     
     private void move() {
         Point head = new Point(snake.getHead());  // make a local 'copy', don't want a reference
 
-        if (!isOpposingDirection())
+        if (requestedDirection.getOppositeDirection() != snake.getDirection())
             snake.setDirection(requestedDirection);
 
         switch (snake.getDirection()) {
