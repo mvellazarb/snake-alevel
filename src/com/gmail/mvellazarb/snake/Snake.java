@@ -1,5 +1,7 @@
 package com.gmail.mvellazarb.snake;
 
+import com.gmail.mvellazarb.snake.Direction;
+
 import java.util.ArrayList;
 import java.awt.Point;
 
